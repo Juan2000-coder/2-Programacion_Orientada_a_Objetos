@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compilar",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-o",
+                "${workspaceFolder}\\build\\programa.exe",
+                "${workspaceFolder}\\src\\*.cpp",
+                "-I",
+                "${workspaceFolder}\\src"
+            ],
+            "group":{
+                "kind":"build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": "$gcc"
+        }
+    ]
+}
