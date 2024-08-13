@@ -1,0 +1,3 @@
+cd /home/pancho/Documentos/Dalessandro_13318_C/cons_5/servidor
+g++ -Wall -pedantic-errors -Werror=return-type *.cpp -o server
+./server 5510
