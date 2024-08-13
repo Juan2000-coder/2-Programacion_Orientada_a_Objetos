@@ -1,0 +1,98 @@
+class C2File
+!!!134914.cpp!!!	C2File()
+    this->serialConfig();
+    memset(this->buffer,'\0', sizeof(this->buffer));
+!!!128258.cpp!!!	setFilename(in filename : std::string) : void
+    this->filename = filename;
+!!!128386.cpp!!!	setN(in N : int) : void
+    this->N = N;
+!!!128130.cpp!!!	serialRequestCSV() : void
+    this->serialWrite(&this->request);
+!!!135042.cpp!!!	serialConfig() : void
+    this->portHandler = CreateFile(
+        TEXT("COM3"),                  //Serial PORT
+        GENERIC_READ | GENERIC_WRITE,  //Openned for both reading and writing
+        0,                             //Non shared Port
+        NULL,                          //For Default behavior
+        OPEN_EXISTING,                 //Open the Serial Port if it exist only (can't creat it)
+        FILE_ATTRIBUTE_NORMAL,         //Default Attribute for files
+        NULL                           //Set to NULL by default
+    );
+
+    if (this->portHandler == INVALID_HANDLE_VALUE) {
+        std::cerr << "Failed to open serial port." << std::endl;
+    }
+
+    /*Sets the parameter for serial communication*/
+    this->serialParameters.DCBlength = sizeof(this->serialParameters);
+    this->serialParameters.BaudRate = CBR_19200;
+    this->serialParameters.ByteSize = 8;
+    this->serialParameters.StopBits = ONESTOPBIT;
+    this->serialParameters.Parity = NOPARITY;
+
+    if (!SetCommState(this->portHandler, &(this->serialParameters))) {
+        std::cerr << "Error setting serial port state." << std::endl;
+        CloseHandle(this->portHandler);
+    }
+!!!135170.cpp!!!	serialRead(inout receiver : char, in numberOfBytesToRead : DWORD) : void
+    DWORD bytesRead;
+    if (!ReadFile(this->portHandler, receiver, numberOfBytesToRead, &bytesRead, NULL)) {
+        std::cerr << "Error reading from serial port." << std::endl;
+        CloseHandle(this->portHandler);
+    }
+!!!135298.cpp!!!	serialReadLine() : void
+    this->serialRead(this->getBufferCurrentPosition(), 1);
+    while(this->getBufferLastChar() != '\n'){
+        this->serialRead(this->getBufferCurrentPosition(), 1); //Reads one character at a time
+    }
+!!!135426.cpp!!!	parseLine() : std::string
+    short int i = -1;
+    std::string line = std::string(this->buffer);
+    while ((i = line.find(',', i + 1)) != std::string::npos){
+        line[i] = ';';
+    }
+    return line;
+!!!135554.cpp!!!	processLine() : void
+    this->serialReadLine();
+    this->fileWriteLine(this->parseLine());
+    this->bufferFlush();
+!!!135682.cpp!!!	readStartingMessage() : std::string
+    std::string startingMessage;
+    for (short int i = 0; i < 4; i++){
+        this->serialReadLine();
+    }
+    startingMessage = std::string(this->getBuffer());
+    this->bufferFlush();
+    return startingMessage;
+!!!135810.cpp!!!	getBuffer() : char
+    return this->buffer;
+!!!135938.cpp!!!	getBufferCurrentPosition() : char
+    return (this->buffer + strlen(this->buffer));
+!!!136066.cpp!!!	getBufferLastChar() : char
+    return this->buffer[strlen(this->buffer)-1];
+!!!136194.cpp!!!	bufferFlush() : void
+    /*Esta también hay que cambiarla*/
+    memset(this->buffer, '\0', strlen(this->buffer));
+!!!136322.cpp!!!	serialWrite(inout request : char) : void
+    DWORD bytesWritten;
+    if (!WriteFile(this->portHandler, request, sizeof(request), &bytesWritten, NULL)) {
+        std::cerr << "Error writing to serial port." << std::endl;
+        CloseHandle(this->portHandler);
+    }
+!!!136450.cpp!!!	closePort() : void
+    CloseHandle(this->portHandler);
+!!!136578.cpp!!!	createFile() : void
+    this->file.open(this->filename, std::ios::out);
+    if (!this->file){
+        std::cerr << "Error opening file"<<std::endl;
+    }
+!!!136706.cpp!!!	fileWriteLine(in line : std::string) : void
+    this->file << line;
+!!!136834.cpp!!!	writeFileHeader() : void
+    std::string Header = "dispositivo_id;porcentaje_valvula;estado_nivel;caudal\n";
+    this->fileWriteLine(Header);
+!!!136962.cpp!!!	flushNewLineChar() : void
+    this->serialRead(this->buffer, 2); //There are 2 new line character after each line
+    this->bufferFlush();
+!!!137090.cpp!!!	closeFile() : void
+    this->file.close();

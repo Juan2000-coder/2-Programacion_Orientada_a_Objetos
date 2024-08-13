@@ -1,0 +1,12 @@
+window_sizes 1362 705 320 1037 659 0
+
+diagrams
+  active  classdiagram_ref 128130 // Diagrama de Clases
+    1041 659 137 A4 96 39
+end
+show_stereotypes
+selected 
+package_ref 129 // Modelado_UML
+open
+end
+end

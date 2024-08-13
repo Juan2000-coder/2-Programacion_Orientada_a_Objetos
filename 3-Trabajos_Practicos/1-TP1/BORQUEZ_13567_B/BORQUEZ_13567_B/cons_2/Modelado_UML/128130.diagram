@@ -1,0 +1,16 @@
+format 224
+
+classcanvas 128002 class_ref 128002 // C2File
+  classdiagramsettings member_max_width 0 end
+  xyz 320.96 54.68 2000
+end
+classcanvas 128130 class_ref 128130 // main
+  classdiagramsettings member_max_width 0 end
+  xyz 199.2 95.47 2000
+end
+relationcanvas 128258 relation_ref 128002 // <unidirectional association>
+  from ref 128130 z 2001 to ref 128002
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

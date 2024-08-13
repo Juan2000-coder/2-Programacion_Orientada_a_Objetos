@@ -1,0 +1,15 @@
+window_sizes 1362 697 320 1037 597 54
+
+diagrams
+  active  classdiagram_ref 128002 // Diagrama de Clases
+    1037 597 130 A4 96 74
+end
+show_stereotypes
+selected operation_ref 135682 // dividerLine
+open
+  class_ref 128002 // C3Report
+  class_ref 128130 // Consigna3
+  class_ref 128258 // C3File
+  class_ref 128386 // C3Register
+end
+end
